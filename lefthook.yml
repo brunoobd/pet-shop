@@ -1,7 +1,7 @@
 pre-commit:
   commands:
     check:
-      run: npm run format {staged_files}
+      run: npm run format {staged_files} && git add {staged_files}
       glob: '*.{js,jsx,ts,tsx,css,json,md}'
       stage_fixed: true
 
