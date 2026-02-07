@@ -11,6 +11,7 @@
     "validate:typecheck": "tsc  --noEmit --skipLibCheck"
   },
   "dependencies": {
+    "@prisma/client": "^7.3.0",
     "next": "16.1.6",
     "react": "19.2.3",
     "react-dom": "19.2.3"
@@ -29,6 +30,7 @@
     "eslint-plugin-prettier": "^5.5.5",
     "lefthook": "^2.1.0",
     "prettier": "^3.8.1",
+    "prisma": "^7.3.0",
     "tailwindcss": "^4",
     "typescript": "^5"
   }
