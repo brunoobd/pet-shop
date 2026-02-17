@@ -1,5 +1,8 @@
 import { cn } from '@/lib/utils';
 import { AppointmentWithDetails } from '@/types/appointment';
+import { AppointmentFormDialog } from '../appointment-form-dialog';
+import { Button } from '../ui/button';
+import { EditIcon } from 'lucide-react';
 
 type AppointmentCardProps = {
   appointment: AppointmentWithDetails;
@@ -40,6 +43,14 @@ export const PeriodSectionAppointmentItem = ({
       <span className="text-paragraph-small-size text-content-secondary">
         {appointment.description}
       </span>
+    </div>
+
+    <div className="text-right mt-2 md:mt-0 col-span-2 md:col-span-1 flex justify-end items-center gap-2">
+      <AppointmentFormDialog appointment={appointment}>
+        <Button variant="edit" size="icon">
+          <EditIcon size={16} />
+        </Button>
+      </AppointmentFormDialog>
     </div>
   </div>
 );
