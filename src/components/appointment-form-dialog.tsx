@@ -47,7 +47,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { toast } from 'sonner';
-import { createAppointment } from '@/app/actions';
+import { createAppointment, updateAppointment } from '@/app/actions';
 import { useEffect, useState } from 'react';
 import { AppointmentWithDetails } from '@/types/appointment';
 
@@ -103,17 +103,28 @@ export const AppointmentFormDialog = ({ appointment, children }: Props) => {
   const onSubmit = async (data: AppointmentFormData) => {
     const [hour, minute] = data.time.split(':');
     const scheduleAt = new Date(data.scheduleAt);
+    const isEdit = !!appointment?.id;
 
     scheduleAt.setHours(Number(hour), Number(minute), 0, 0);
 
-    const result = await createAppointment({ ...data, scheduleAt });
+    const result = isEdit
+      ? await updateAppointment(appointment.id, {
+          ...data,
+          scheduleAt,
+        })
+      : await createAppointment({
+          ...data,
+          scheduleAt,
+        });
 
     if (result?.error) {
       toast.error(result.error);
       return;
     }
 
-    toast.success(`Agendamento criado com sucesso!`);
+    toast.success(
+      `Agendamento ${isEdit ? 'atualizado' : 'criado'} com sucesso!`
+    );
     setIsOpen(false);
     reset();
   };
