@@ -1,63 +1,29 @@
 import { AppointmentFormDialog } from '@/components/appointment-form-dialog';
+import { DatePicker } from '@/components/date-picker';
 import { PeriodSection } from '@/components/period-section';
 import { Button } from '@/components/ui/button';
-import { Appointment } from '@/generated/prisma/client';
 import { prisma } from '@/lib/prisma';
 import { getPeriodSections } from '@/utils/appointment';
+import { endOfDay, parseISO, startOfDay } from 'date-fns';
 
-const appointments: Appointment[] = [
-  {
-    id: '1',
-    petName: 'Buddy',
-    description: 'Corte de cabelo',
-    tutorName: 'John Doe',
-    phone: '1234567890',
-    scheduleAt: new Date('2026-01-01'),
-  },
-  {
-    id: '2',
-    petName: 'Buddy',
-    description: 'Corte de cabelo',
-    tutorName: 'Jane Doe',
-    phone: '1234567890',
-    scheduleAt: new Date('2026-01-02T10:00:00'),
-  },
-  {
-    id: '3',
-    petName: 'Buddy',
-    description: 'Corte de cabelo',
-    tutorName: 'Jane Doe',
-    phone: '1234567890',
-    scheduleAt: new Date('2026-01-03T11:00:00'),
-  },
-  {
-    id: '4',
-    petName: 'Buddy',
-    description: 'Corte de cabelo',
-    tutorName: 'Jane Doe',
-    phone: '1234567890',
-    scheduleAt: new Date('2026-01-04T12:00:00'),
-  },
-  {
-    id: '5',
-    petName: 'Buddy',
-    description: 'Corte de cabelo',
-    tutorName: 'Jane Doe',
-    phone: '1234567890',
-    scheduleAt: new Date('2026-01-05T13:00:00'),
-  },
-  {
-    id: '6',
-    petName: 'Buddy',
-    description: 'Corte de cabelo',
-    tutorName: 'Jane Doe',
-    phone: '1234567890',
-    scheduleAt: new Date('2026-01-06T14:00:00'),
-  },
-];
-
-const Home = async () => {
-  const appointments = await prisma.appointment.findMany();
+const Home = async ({
+  searchParams,
+}: {
+  searchParams: Promise<{ date?: string }>;
+}) => {
+  const { date } = await searchParams;
+  const selectedDate = date ? parseISO(date) : new Date();
+  const appointments = await prisma.appointment.findMany({
+    where: {
+      scheduleAt: {
+        gte: startOfDay(selectedDate),
+        lte: endOfDay(selectedDate),
+      },
+    },
+    orderBy: {
+      scheduleAt: 'asc',
+    },
+  });
   const periodSections = getPeriodSections(appointments);
 
   return (
@@ -72,6 +38,14 @@ const Home = async () => {
             Aqui você pode ver todos os clientes e serviços agendados para hoje.
           </p>
         </div>
+
+        <div className="hidden md:flex item-center gap-4">
+          <DatePicker />
+        </div>
+      </div>
+
+      <div className="mt-3 mb-8 md:hidden">
+        <DatePicker />
       </div>
 
       <div className="pb-24 md:pb-0">
